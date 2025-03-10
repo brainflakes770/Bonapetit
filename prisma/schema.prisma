@@ -1,0 +1,59 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Category {
+  id          String       @id @default(cuid())
+  name        String
+  dishes      Dish[]
+  subCategories SubCategory[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model SubCategory {
+  id          String    @id @default(cuid())
+  name        String
+  categoryId  String
+  category    Category  @relation(fields: [categoryId], references: [id])
+  dishes      Dish[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Dish {
+  id            String       @id @default(cuid())
+  name          String
+  categoryId    String
+  category      Category     @relation(fields: [categoryId], references: [id])
+  subCategoryId String?
+  subCategory   SubCategory? @relation(fields: [subCategoryId], references: [id])
+  lastPrepared  DateTime?
+  weeksSince    Int         @default(0)
+  preparations  DishPreparation[]
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+}
+
+model ShabbatMenu {
+  id          String       @id @default(cuid())
+  date        DateTime
+  isEvening   Boolean      // true for evening meal, false for morning meal
+  dishes      DishPreparation[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model DishPreparation {
+  id          String       @id @default(cuid())
+  dishId      String
+  dish        Dish        @relation(fields: [dishId], references: [id])
+  menuId      String
+  menu        ShabbatMenu @relation(fields: [menuId], references: [id])
+  createdAt   DateTime    @default(now())
+} 
