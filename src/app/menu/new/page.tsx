@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 
 type Category = {
@@ -46,7 +46,6 @@ export default function NewMenu() {
       vegetables: []
     }
   })
-  const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   const generateRandomMenu = async () => {
